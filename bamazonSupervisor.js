@@ -29,7 +29,7 @@ connection.connect(function (err) {
                 if (error) throw error;
                 // console.log("Department Id | Department Name | Product Sales | Total Profit");
                 var data = [];
-                data.push(["Department ID", "Department Name", "Product Sales", "Total Profit"])
+                data.push(["Department ID", "Department Name", "Product Sales", "Total Profit"]);
                 for (var i = 0; i < results[0].length; i++) {
                     var row = Object.values(results[0][i]);
                     var sales = 0;

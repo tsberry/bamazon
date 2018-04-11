@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var {table} = require("table");
 
 var connection = mysql.createConnection({
     user: 'root',
@@ -25,19 +26,27 @@ connection.connect(function (err) {
     ]).then(function (inquirerResponse) {
         if (inquirerResponse.choice === "View Products for Sale") {
             connection.query(`SELECT * FROM products`, function (error, results, fields) {
-                console.log(`Item ID | Product Department | Price ($) | Quantity in Stock`);
+                var data = [];
+                data.push(["Item ID", "Product Name", "Product Department", "Price ($)", "Quantity in Stock", "Product Sales ($)"]);
                 for (var i = 0; i < results.length; i++) {
-                    console.log(`${results[i].item_id} | ${results[i].product_name} | ${results[i].department_name} | ${results[i].price} | ${results[i].stock_quantity}`);
+                    var row = Object.values(results[i]);
+                    data.push(row);
                 }
+                var output = table(data);
+                console.log(output);
                 connection.end();
             });
         }
         if (inquirerResponse.choice === "View Low Inventory") {
             connection.query(`SELECT * FROM products WHERE stock_quantity <= 5`, function (error, results, fields) {
-                console.log(`Item ID | Product Department | Price ($) | Quantity in Stock`);
+                var data = [];
+                data.push(["Item ID", "Product Name", "Product Department", "Price ($)", "Quantity in Stock", "Product Sales ($)"]);
                 for (var i = 0; i < results.length; i++) {
-                    console.log(`${results[i].item_id} | ${results[i].product_name} | ${results[i].department_name} | ${results[i].price} | ${results[i].stock_quantity}`);
+                    var row = Object.values(results[i]);
+                    data.push(row);
                 }
+                var output = table(data);
+                console.log(output);
                 connection.end();
             });
         }
