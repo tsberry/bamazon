@@ -42,7 +42,6 @@ connection.connect(function (err) {
                     row.splice(2, 0, sales);
                     row[3] = sales -  row[3];
                     data.push(row);
-                //     console.log(`${id} | ${department} | ${sales} | ${sales - overhead}`);
                 }
                 var output = table(data);
                 console.log(output);
