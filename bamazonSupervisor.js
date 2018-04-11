@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var {table} = require("table");
 
 var connection = mysql.createConnection({
     user: 'root',
@@ -26,8 +27,11 @@ connection.connect(function (err) {
         if (inquirerResponse.choice === "View Product Sales by Department") {
             connection.query(`SELECT * FROM departments; SELECT * FROM products`, function (error, results, fields) {
                 if (error) throw error;
-                console.log("Department Id | Department Name | Product Sales | Total Profit");
+                // console.log("Department Id | Department Name | Product Sales | Total Profit");
+                var data = [];
+                data.push(["Department ID", "Department Name", "Product Sales", "Total Profit"])
                 for (var i = 0; i < results[0].length; i++) {
+                    var row = Object.values(results[0][i]);
                     var sales = 0;
                     var department = results[0][i].department_name;
                     var id = results[0][i].department_id;
@@ -35,8 +39,13 @@ connection.connect(function (err) {
                     for (var j = 0; j < results[1].length; j++) {
                         if (results[1][j].department_name === department) sales += results[1][j].product_sales;
                     }
-                    console.log(`${id} | ${department} | ${sales} | ${sales - overhead}`);
+                    row.splice(2, 0, sales);
+                    row[3] = sales -  row[3];
+                    data.push(row);
+                //     console.log(`${id} | ${department} | ${sales} | ${sales - overhead}`);
                 }
+                var output = table(data);
+                console.log(output);
                 connection.end();
             });
         }
