@@ -39,9 +39,10 @@ connection.connect(function (err) {
                     console.log(`Sorry, we only have ${results[0].stock_quantity} in stock.`);
                 }
                 else {
-                    connection.query(`UPDATE products SET stock_quantity = ${results[0].stock_quantity - inquirerResponse.quantity} WHERE item_id = ${inquirerResponse.id}; SELECT * FROM products WHERE item_id = '${inquirerResponse.id}'`, function(error, results, fields) {
+                    var cost = inquirerResponse.quantity * results[0].price;
+                    connection.query(`UPDATE products SET stock_quantity = stock_quantity - ${inquirerResponse.quantity}, product_sales = product_sales + ${cost} WHERE item_id = ${inquirerResponse.id}`, function(error, results, fields) {
                         if(error) throw error;
-                        console.log(`Your total cost is ${inquirerResponse.quantity * results[1][0].price} dollars.`);
+                        console.log(`Your total cost is ${cost} dollars.`);
                     });
                 }
                 connection.end();

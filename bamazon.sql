@@ -5,11 +5,18 @@ CREATE DATABASE bamazon;
 USE bamazon;
 
 CREATE TABLE products (
-item_id INTEGER(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+item_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 product_name VARCHAR(30) NOT NULL,
 department_name VARCHAR(30) NOT NULL,
 price INTEGER(10) NOT NULL,
-stock_quantity INTEGER(10) NOT NULL
+stock_quantity INTEGER(10) NOT NULL,
+product_sales INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE departments (
+department_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+department_name VARCHAR(30) NOT NULL,
+overhead_costs INTEGER NOT NULL
 );
 
 INSERT INTO products(product_name, department_name, price, stock_quantity)
@@ -42,5 +49,21 @@ VALUES("Inception", "Movies", 15, 30);
 INSERT INTO products(product_name, department_name, price, stock_quantity)
 VALUES("Star Wars", "Movies", 15, 30);
 
-UPDATE products SET stock_quantity = 5 WHERE item_id = 2;
+INSERT INTO departments(department_name, overhead_costs)
+VALUES("Groceries", 200);
+
+INSERT INTO departments(department_name, overhead_costs)
+VALUES("Cleaning", 50);
+
+INSERT INTO departments(department_name, overhead_costs)
+VALUES("Household", 100);
+
+INSERT INTO departments(department_name, overhead_costs)
+VALUES("Video Games", 150);
+
+INSERT INTO departments(department_name, overhead_costs)
+VALUES("Movies", 80);
+
 SELECT * FROM products;
+
+SELECT * FROM departments;
