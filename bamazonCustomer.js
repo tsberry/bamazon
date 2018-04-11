@@ -32,7 +32,7 @@ connection.connect(function (err) {
                 name: "quantity"
             }
         ]).then(function (inquirerResponse) {
-            connection.query(`SELECT * FROM products WHERE item_id = '${inquirerResponse.id}'`, function (error, results, fields) {
+            connection.query(`SELECT * FROM products WHERE item_id = ${inquirerResponse.id}`, function (error, results, fields) {
                 if(error) throw error;
                 console.log(`You ordered ${inquirerResponse.quantity} units of ${results[0].product_name}.`);
                 if(results[0].stock_quantity < inquirerResponse.quantity) {
