@@ -61,7 +61,33 @@ connection.connect(function (err) {
             });
         }
         if (inquirerResponse.choice === "Add New Product") {
-
+            inquirer.prompt([
+                {
+                    type: "input",
+                    message: "Enter your product's name: ",
+                    name: "name"
+                },
+                {
+                    type: "input",
+                    message: "Enter your product's department: ",
+                    name: "department"
+                },
+                {
+                    type: "input",
+                    message: "Enter your product's price: ",
+                    name: "price"
+                },
+                {
+                    type: "input",
+                    message: "Enter how many you want to stock: ",
+                    name: "quantity"
+                }
+            ]).then(function (inquirerResponse) {
+                connection.query(`INSERT INTO products(product_name, department_name, price, stock_quantity) VALUES('${inquirerResponse.name}', '${inquirerResponse.department}', ${inquirerResponse.price}, ${inquirerResponse.quantity})`, function (error, results, fields) {
+                    if (error) throw error;
+                });
+                connection.end();
+            });
         }
     });
 });
