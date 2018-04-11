@@ -31,7 +31,6 @@ connection.connect(function (err) {
         connection.query(`SELECT * FROM products WHERE item_id = '${inquirerResponse.id}'`, function (error, results, fields) {
             if(error) throw error;
             console.log(`You ordered ${inquirerResponse.quantity} units of ${results[0].product_name}.`);
-            // console.log(`We have ${results[0].stock_quantity} units in stock.`);
             if(results[0].stock_quantity < inquirerResponse.quantity) {
                 console.log(`Sorry, we only have ${results[0].stock_quantity} in stock.`);
             }
