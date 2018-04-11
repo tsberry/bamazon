@@ -37,11 +37,27 @@ connection.connect(function (err) {
                     }
                     console.log(`${id} | ${department} | ${sales} | ${sales - overhead}`);
                 }
+                connection.end();
             });
         }
         if (inquirerResponse.choice === "Create New Department") {
-            console.log("Hello 2");
+            inquirer.prompt([
+                {
+                    type: "input",
+                    message: "Enter new department name: ",
+                    name: "department"
+                },
+                {
+                    type: "input",
+                    message: "Enter new department's overhead costs: ",
+                    name: "overhead"
+                }
+            ]).then(function (inquirerResponse) {
+                connection.query(`INSERT INTO departments(department_name, overhead_costs) VALUES('${inquirerResponse.department}', ${inquirerResponse.overhead})`, function (error, results, fields) {
+                    if (error) throw error;
+                });
+                connection.end();
+            });
         }
-        connection.end();
     });
 });
