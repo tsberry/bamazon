@@ -1,6 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-var {table} = require("table");
+var { table } = require("table");
 
 var connection = mysql.createConnection({
     user: 'root',
@@ -16,6 +16,10 @@ connection.connect(function (err) {
     }
 
     console.log('connected as id ' + connection.threadId);
+    afterConnection();
+});
+
+function afterConnection() {
     inquirer.prompt([
         {
             type: "list",
@@ -62,8 +66,8 @@ connection.connect(function (err) {
                     message: "How many would you like to add?",
                     name: "quantity"
                 }
-            ]).then(function(inquirerResponse) {
-                connection.query(`UPDATE products SET stock_quantity = stock_quantity + ${inquirerResponse.quantity} WHERE item_id = ${inquirerResponse.id}; SELECT * FROM products WHERE item_id = ${inquirerResponse.id}`, function(error, results, fields) {
+            ]).then(function (inquirerResponse) {
+                connection.query(`UPDATE products SET stock_quantity = stock_quantity + ${inquirerResponse.quantity} WHERE ?; SELECT * FROM products WHERE ?`, [{item_id: inquirerResponse.id}, {item_id: inquirerResponse.id}], function (error, results, fields) {
                     console.log(`You added ${inquirerResponse.quantity} units of ${results[1][0].product_name}. New quantity: ${results[1][0].stock_quantity} units.`)
                     connection.end();
                 });
@@ -92,11 +96,16 @@ connection.connect(function (err) {
                     name: "quantity"
                 }
             ]).then(function (inquirerResponse) {
-                connection.query(`INSERT INTO products(product_name, department_name, price, stock_quantity) VALUES('${inquirerResponse.name}', '${inquirerResponse.department}', ${inquirerResponse.price}, ${inquirerResponse.quantity})`, function (error, results, fields) {
+                connection.query("INSERT INTO products SET ?", {
+                 product_name: inquirerResponse.name,
+                 department_name: inquirerResponse.department,
+                 price: inquirerResponse.price,
+                 stock_quantity: inquirerResponse.quantity   
+                }, function (error, results, fields) {
                     if (error) throw error;
                 });
                 connection.end();
             });
         }
     });
-});
+}

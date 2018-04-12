@@ -16,6 +16,10 @@ connection.connect(function (err) {
     }
 
     console.log('connected as id ' + connection.threadId);
+    afterConnection();
+});
+
+function afterConnection() {
     inquirer.prompt([
         {
             type: "list",
@@ -68,4 +72,4 @@ connection.connect(function (err) {
             });
         }
     });
-});
+}
