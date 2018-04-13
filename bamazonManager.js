@@ -114,8 +114,9 @@ function addProduct() {
             stock_quantity: inquirerResponse.quantity
         }, function (error, results, fields) {
             if (error) throw error;
+            console.log(`You added product '${inquirerResponse.name}' to the ${inquirerResponse.department} department. You stocked ${inquirerResponse.quantity} at ${inquirerResponse.price} dollars each.`);
+            start();
         });
-        start();
     });
 }
 
