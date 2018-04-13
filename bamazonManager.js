@@ -16,15 +16,15 @@ connection.connect(function (err) {
     }
 
     console.log('connected as id ' + connection.threadId);
-    afterConnection();
+    start();
 });
 
-function afterConnection() {
+function start() {
     inquirer.prompt([
         {
             type: "list",
-            message: "Choose an option: ",
-            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"],
+            message: "Choose an option:",
+            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Quit"],
             name: "choice"
         }
     ]).then(function (inquirerResponse) {
@@ -32,6 +32,7 @@ function afterConnection() {
         if (inquirerResponse.choice === "View Low Inventory") viewLow();
         if (inquirerResponse.choice === "Add to Inventory") addInventory();
         if (inquirerResponse.choice === "Add New Product") addProduct();
+        if (inquirerResponse.choice === "Quit") quit();
     });
 }
 
@@ -45,7 +46,7 @@ function viewProducts() {
         }
         var output = table(data);
         console.log(output);
-        connection.end();
+        start();
     });
 }
 
@@ -59,7 +60,7 @@ function viewLow() {
         }
         var output = table(data);
         console.log(output);
-        connection.end();
+        start();
     });
 }
 
@@ -67,7 +68,7 @@ function addInventory() {
     inquirer.prompt([
         {
             type: "input",
-            message: "Enter the ID of the product you would like to add stock to: ",
+            message: "Enter the ID of the product you would like to add stock to:",
             name: "id"
         },
         {
@@ -78,7 +79,7 @@ function addInventory() {
     ]).then(function (inquirerResponse) {
         connection.query(`UPDATE products SET stock_quantity = stock_quantity + ${inquirerResponse.quantity} WHERE ?; SELECT * FROM products WHERE ?`, [{ item_id: inquirerResponse.id }, { item_id: inquirerResponse.id }], function (error, results, fields) {
             console.log(`You added ${inquirerResponse.quantity} units of ${results[1][0].product_name}. New quantity: ${results[1][0].stock_quantity} units.`)
-            connection.end();
+            start();
         });
     });
 }
@@ -114,6 +115,11 @@ function addProduct() {
         }, function (error, results, fields) {
             if (error) throw error;
         });
-        connection.end();
+        start();
     });
+}
+
+function quit() {
+    console.log("Thank you for using the Bamazon manager interface. Please come again.");
+    connection.end();
 }

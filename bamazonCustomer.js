@@ -16,10 +16,10 @@ connection.connect(function (err) {
     }
 
     console.log('connected as id ' + connection.threadId);
-    afterConnection();
+    start();
 });
 
-function afterConnection() {
+function start() {
     connection.query(`SELECT * FROM products`, function (error, results, fields) {
         var data = [];
         data.push(["Item ID", "Product Name", "Product Department", "Price ($)", "Quantity in Stock"]);
@@ -30,7 +30,18 @@ function afterConnection() {
         }
         var output = table(data);
         console.log(output);
-        buy();
+        inquirer.prompt([
+            {
+                type: "list",
+                message: "Choose an option:",
+                choices: ["Buy a product", "Quit"],
+                name: "choice"
+            }
+        ]).then(function (inquirerResponse) {
+            if (inquirerResponse.choice === "Buy a product") buy();
+            if (inquirerResponse.choice === "Quit") quit();
+        });
+
     });
 }
 
@@ -38,16 +49,16 @@ function buy() {
     inquirer.prompt([
         {
             type: "input",
-            message: "Enter the ID of the product you would like to purchase: ",
+            message: "Enter the ID of the product you would like to purchase:",
             name: "id"
         },
         {
             type: "input",
-            message: "Enter the quantity you would like to purchase: ",
+            message: "Enter the quantity you would like to purchase:",
             name: "quantity"
         }
     ]).then(function (inquirerResponse) {
-        connection.query(`SELECT * FROM products WHERE ?`, {item_id: `${inquirerResponse.id}`}, function (error, results, fields) {
+        connection.query(`SELECT * FROM products WHERE ?`, { item_id: `${inquirerResponse.id}` }, function (error, results, fields) {
             if (error) throw error;
             console.log(`You ordered ${inquirerResponse.quantity} units of ${results[0].product_name}.`);
             if (results[0].stock_quantity < inquirerResponse.quantity) {
@@ -55,12 +66,17 @@ function buy() {
             }
             else {
                 var cost = inquirerResponse.quantity * results[0].price;
-                connection.query(`UPDATE products SET stock_quantity = stock_quantity - ${inquirerResponse.quantity}, product_sales = product_sales + ${cost} WHERE ?`, {item_id: `${inquirerResponse.id}`}, function (error, results, fields) {
+                connection.query(`UPDATE products SET stock_quantity = stock_quantity - ${inquirerResponse.quantity}, product_sales = product_sales + ${cost} WHERE ?`, { item_id: `${inquirerResponse.id}` }, function (error, results, fields) {
                     if (error) throw error;
                     console.log(`Your total cost is ${cost} dollars.`);
                 });
             }
-            connection.end();
+            start();
         });
     });
+}
+
+function quit() {
+    console.log("Thank you for shopping at Bamazon. Please come again.");
+    connection.end();
 }

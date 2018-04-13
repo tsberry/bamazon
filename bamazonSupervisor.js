@@ -16,20 +16,21 @@ connection.connect(function (err) {
     }
 
     console.log('connected as id ' + connection.threadId);
-    afterConnection();
+    start();
 });
 
-function afterConnection() {
+function start() {
     inquirer.prompt([
         {
             type: "list",
-            message: "Choose an option: ",
-            choices: ["View Product Sales by Department", "Create New Department"],
+            message: "Choose an option:",
+            choices: ["View Product Sales by Department", "Create New Department", "Quit"],
             name: "choice"
         }
     ]).then(function (inquirerResponse) {
         if (inquirerResponse.choice === "View Product Sales by Department") viewSales();
         if (inquirerResponse.choice === "Create New Department") addDepartment();
+        if (inquirerResponse.choice === "Quit") quit();
     });
 }
 
@@ -53,26 +54,31 @@ function viewSales() {
         }
         var output = table(data);
         console.log(output);
+        start();
     });
-    connection.end();
 }
 
 function addDepartment() {
     inquirer.prompt([
         {
             type: "input",
-            message: "Enter new department name: ",
+            message: "Enter new department name:",
             name: "department"
         },
         {
             type: "input",
-            message: "Enter new department's overhead costs: ",
+            message: "Enter new department's overhead costs:",
             name: "overhead"
         }
     ]).then(function (inquirerResponse) {
         connection.query("INSERT INTO departments SET ?", {department_name: inquirerResponse.department, overhead_costs: inquirerResponse.overhead}, function (error, results, fields) {
             if (error) throw error;
         });
-        connection.end();
+        start();
     });
+}
+
+function quit() {
+    console.log("Thank you for using the Bamazon manager interface. Please come again.");
+    connection.end();
 }
