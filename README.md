@@ -1,10 +1,17 @@
 # bamazon
 
-## Requirements
+# Table of Contents
+* [Requirements](#requirements)
+* [Instructions](#instructions)
+* [bamazonCustomer](#bamazonCustomer)
+* [bamazonManager](#bamazonManager)
+* [bamazonSupervisor](#bamazonSupervisor)
+
+# Requirements
 * Node
 * NPM
 
-## Instructions
+# Instructions
 1. Clone the repository.
 2. Run `npm i` (this will install the inquirer, mysql, and table packages).
 3. Run one of the applications by typing `node bamazonCustomer.js`, `node bamazonManager.js`, or `node bamazonSupervisor.js`.
