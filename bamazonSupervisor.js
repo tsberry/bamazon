@@ -73,7 +73,7 @@ function addDepartment() {
     ]).then(function (inquirerResponse) {
         connection.query("INSERT INTO departments SET ?", {department_name: inquirerResponse.department, overhead_costs: inquirerResponse.overhead}, function (error, results, fields) {
             if (error) throw error;
-            console.log(`You added the ${inquirerResponse.department} to the store with an overhead of ${inquirerResponse.overhead}.`);
+            console.log(`You added the ${inquirerResponse.department} department to the store with an overhead of ${inquirerResponse.overhead}.`);
             start();
         });
         
