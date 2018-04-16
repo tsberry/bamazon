@@ -1,6 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-var {table} = require("table");
+var printTable = require("./printTable.js");
 
 var connection = mysql.createConnection({
     user: 'root',
@@ -35,25 +35,26 @@ function start() {
 }
 
 function viewSales() {
-    connection.query(`SELECT * FROM departments; SELECT * FROM products`, function (error, results, fields) {
+    connection.query(`SELECT
+    departments.department_id as "Department ID",
+    departments.department_name AS "Department Name",
+    departments.overhead_costs AS "Overhead Costs", 
+    CASE 
+        WHEN (sales.product_sales) IS NOT NULL 
+        THEN (sales.product_sales) 
+        ELSE 0 
+    END AS "Product Sales", 
+    CASE
+        WHEN (sales.product_sales) IS NOT NULL
+        THEN (sales.product_sales - departments.overhead_costs)
+        ELSE (-departments.overhead_costs)
+    END AS "Total Profit"
+    FROM departments
+    LEFT JOIN 
+    (SELECT products.department_name, SUM(products.product_sales) as product_sales FROM products GROUP BY department_name) AS sales
+    ON departments.department_name=sales.department_name`, function (error, results, fields) {
         if (error) throw error;
-        var data = [];
-        data.push(["Department ID", "Department Name", "Product Sales", "Total Profit"]);
-        for (var i = 0; i < results[0].length; i++) {
-            var row = Object.values(results[0][i]);
-            var sales = 0;
-            var department = results[0][i].department_name;
-            var id = results[0][i].department_id;
-            var overhead = results[0][i].overhead_costs;
-            for (var j = 0; j < results[1].length; j++) {
-                if (results[1][j].department_name === department) sales += results[1][j].product_sales;
-            }
-            row.splice(2, 0, sales);
-            row[3] = sales -  row[3];
-            data.push(row);
-        }
-        var output = table(data);
-        console.log(output);
+        printTable(results, fields);
         start();
     });
 }
@@ -81,6 +82,14 @@ function addDepartment() {
 }
 
 function quit() {
-    console.log("Thank you for using the Bamazon manager interface. Please come again.");
+    console.log("Thank you for using the Bamazon supervisor interface. Please come again.");
     connection.end();
+}
+
+function getHeader(fields) {
+    var header = [];
+    for(var i = 0; i < fields.length; i++) {
+        header.push(fields[i]);
+    }
+    return header;
 }

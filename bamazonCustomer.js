@@ -1,6 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-var { table } = require("table");
+var printTable = require("./printTable.js");
 
 var connection = mysql.createConnection({
     user: 'root',
@@ -20,16 +20,8 @@ connection.connect(function (err) {
 });
 
 function start() {
-    connection.query(`SELECT * FROM products`, function (error, results, fields) {
-        var data = [];
-        data.push(["Item ID", "Product Name", "Product Department", "Price ($)", "Quantity in Stock"]);
-        for (var i = 0; i < results.length; i++) {
-            var row = Object.values(results[i]);
-            row.pop();
-            data.push(row);
-        }
-        var output = table(data);
-        console.log(output);
+    connection.query(`SELECT item_id AS "Item ID", product_name AS "Product Name", department_name AS "Product Department", price AS "Price ($)", stock_quantity AS "Quantity in Stock" FROM products`, function (error, results, fields) {
+        printTable(results, fields);
         inquirer.prompt([
             {
                 type: "list",
