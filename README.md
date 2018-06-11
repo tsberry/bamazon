@@ -20,6 +20,7 @@ Bamazon is a command-line node application simulating a virtual store. It contai
 # Requirements
 * Node
 * NPM
+* MySQL Server
 
 # Instructions
 1. Clone the repository.
