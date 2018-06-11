@@ -1,11 +1,21 @@
 # bamazon
 
 # Table of Contents
+* [About](#about)
+* [Technologies](#technologies)
 * [Requirements](#requirements)
 * [Instructions](#instructions)
 * [bamazonCustomer](#bamazonCustomer)
 * [bamazonManager](#bamazonManager)
 * [bamazonSupervisor](#bamazonSupervisor)
+
+# About
+Bamazon is a command-line node application simulating a virtual store. It contains three separate views for customers, managers, and supervisors; each view has different options such as buying products, checking inventory, and viewing store sales by department.
+
+# Technologies
+* Node.js
+* Inquirer
+* MySQL
 
 # Requirements
 * Node

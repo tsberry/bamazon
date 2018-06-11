@@ -63,24 +63,3 @@ VALUES("Video Games", 150);
 
 INSERT INTO departments(department_name, overhead_costs)
 VALUES("Movies", 80);
-
-SELECT * FROM products;
-
-SELECT * FROM departments;
-
-SELECT departments.department_name AS "Department Name",
-departments.overhead_costs AS "Overhead Costs", 
-CASE 
-	WHEN (sales.product_sales) IS NOT NULL 
-	THEN (sales.product_sales) 
-	ELSE 0 
-END AS "Product Sales", 
-CASE
-	WHEN (sales.product_sales) IS NOT NULL
-    THEN (sales.product_sales - departments.overhead_costs)
-    ELSE (-departments.overhead_costs)
-END AS "Total Profit"
-FROM departments
-LEFT JOIN 
-(SELECT products.department_name, SUM(products.product_sales) as product_sales FROM products GROUP BY department_name) AS sales
-ON departments.department_name=sales.department_name;
